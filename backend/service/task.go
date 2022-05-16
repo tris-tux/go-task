@@ -7,16 +7,16 @@ import (
 	"github.com/tris-tux/go-task/backend/schema"
 )
 
-func GetAll(ctx context.Context) ([]schema.Todo, error) {
+func GetAll(ctx context.Context) ([]schema.Task, error) {
 	return db.GetAll(ctx)
 }
 
-func Insert(ctx context.Context, todo *schema.Todo) (int, error) {
-	return db.Insert(ctx, todo)
+func Insert(ctx context.Context, task *schema.Task) (int, error) {
+	return db.Insert(ctx, task)
 }
 
-func Update(ctx context.Context, todo *schema.Todo) error {
-	return db.Update(ctx, todo)
+func Update(ctx context.Context, task *schema.Task) error {
+	return db.Update(ctx, task)
 }
 
 func Delete(ctx context.Context, id int) error {

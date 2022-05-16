@@ -7,13 +7,13 @@ import (
 )
 
 func InitRoutes(postgres *db.Postgres) *http.ServeMux {
-	todoHandler := &todoHandler{
+	taskHandler := &taskHandler{
 		postgres: postgres,
 		static:   &db.Static{},
 	}
 	mux := http.NewServeMux()
-	mux.HandleFunc("/static", todoHandler.GetStatic)
-	mux.HandleFunc("/todo", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/static", taskHandler.GetStatic)
+	mux.HandleFunc("/task", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
 		w.Header().Set("Access-Control-Allow-Headers", "Origin, Content-Type, Authorization, cache-control")
@@ -22,13 +22,13 @@ func InitRoutes(postgres *db.Postgres) *http.ServeMux {
 		case http.MethodOptions:
 			w.Write([]byte("allowed"))
 		case http.MethodGet:
-			todoHandler.getAllTodo(w, r)
+			taskHandler.getAllTask(w, r)
 		case http.MethodPost:
-			todoHandler.insertTodo(w, r)
+			taskHandler.insertTask(w, r)
 		case http.MethodPut:
-			todoHandler.updateTodo(w, r)
+			taskHandler.updateTask(w, r)
 		case http.MethodDelete:
-			todoHandler.deleteTodo(w, r)
+			taskHandler.deleteTask(w, r)
 		default:
 			responseError(w, http.StatusNotFound, "")
 		}

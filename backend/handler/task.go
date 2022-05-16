@@ -7,41 +7,41 @@ import (
 
 	"github.com/tris-tux/go-task/backend/db"
 	"github.com/tris-tux/go-task/backend/schema"
-	"github.com/tris-tux/go-task/backend/service"
+	"github.com/tris-tux/go-task/backend/services"
 )
 
-type todoHandler struct {
+type taskHandler struct {
 	postgres *db.Postgres
 	static   *db.Static
 }
 
-func (h *todoHandler) GetStatic(w http.ResponseWriter, r *http.Request) {
+func (h *taskHandler) GetStatic(w http.ResponseWriter, r *http.Request) {
 	ctx := db.SetRepo(r.Context(), h.static)
 
-	todoList, err := service.GetAll(ctx)
+	taskList, err := service.GetAll(ctx)
 	if err != nil {
 		responseError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	responseOK(w, todoList)
+	responseOK(w, taskList)
 }
 
-func (h *todoHandler) getAllTodo(w http.ResponseWriter, r *http.Request) {
+func (h *taskHandler) getAllTask(w http.ResponseWriter, r *http.Request) {
 	if h.postgres == nil {
 		responseError(w, http.StatusInternalServerError, "must connect to postgres")
 		return
 	}
 	ctx := db.SetRepo(r.Context(), h.postgres)
 
-	todoList, err := service.GetAll(ctx)
+	taskList, err := service.GetAll(ctx)
 	if err != nil {
 		responseError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	responseOK(w, todoList)
+	responseOK(w, taskList)
 }
 
-func (h *todoHandler) insertTodo(w http.ResponseWriter, r *http.Request) {
+func (h *taskHandler) insertTask(w http.ResponseWriter, r *http.Request) {
 	if h.postgres == nil {
 		responseError(w, http.StatusInternalServerError, "must connect to postgres")
 		return
@@ -54,13 +54,13 @@ func (h *todoHandler) insertTodo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var todo schema.Todo
-	if err := json.Unmarshal(b, &todo); err != nil {
+	var task schema.Task
+	if err := json.Unmarshal(b, &task); err != nil {
 		responseError(w, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	id, err := service.Insert(ctx, &todo)
+	id, err := service.Insert(ctx, &task)
 	if err != nil {
 		responseError(w, http.StatusInternalServerError, err.Error())
 		return
@@ -69,7 +69,7 @@ func (h *todoHandler) insertTodo(w http.ResponseWriter, r *http.Request) {
 	responseOK(w, id)
 }
 
-func (h *todoHandler) updateTodo(w http.ResponseWriter, r *http.Request) {
+func (h *taskHandler) updateTask(w http.ResponseWriter, r *http.Request) {
 	if h.postgres == nil {
 		responseError(w, http.StatusInternalServerError, "must connect to postgres")
 		return
@@ -82,22 +82,22 @@ func (h *todoHandler) updateTodo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var todo schema.Todo
-	if err := json.Unmarshal(b, &todo); err != nil {
+	var task schema.Task
+	if err := json.Unmarshal(b, &task); err != nil {
 		responseError(w, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	err = service.Update(ctx, &todo)
+	err = service.Update(ctx, &task)
 	if err != nil {
 		responseError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	responseOK(w, todo.ID)
+	responseOK(w, task.ID)
 }
 
-func (h *todoHandler) deleteTodo(w http.ResponseWriter, r *http.Request) {
+func (h *taskHandler) deleteTask(w http.ResponseWriter, r *http.Request) {
 	if h.postgres == nil {
 		responseError(w, http.StatusInternalServerError, "must connect to postgres")
 		return

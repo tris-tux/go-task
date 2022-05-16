@@ -6,32 +6,41 @@ import (
 
 type Static struct{}
 
-func (s *Static) GetAll() ([]schema.Todo, error) {
-	todoList := []schema.Todo{
+func (s *Static) GetAll() ([]schema.Task, error) {
+	taskList := []schema.Task{
 		{
-			ID:   1,
-			Note: "Beli mie instan",
-			Done: false,
+			TaskId:   1,
+			Title: "AAA",
+			AcctionTime: 1652461200,
+			CreateTime: 1652461200,
+			UpdateTime: 1652461200,
+			IdFinished: false,
 		},
 		{
-			ID:   2,
-			Note: "Isi pulsa",
-			Done: true,
+			TaskId:   2,
+			Title: "BBB",
+			AcctionTime: 1652462100,
+			CreateTime: 1652462100,
+			UpdateTime: 1652462100,
+			IdFinished: false,
 		},
 		{
-			ID:   3,
-			Note: "Ambil uang di atm",
-			Done: false,
+			TaskId:   3,
+			Title: "CCC",
+			AcctionTime: 1652661200,
+			CreateTime: 1652661200,
+			UpdateTime: 1652661200,
+			IdFinished: false,
 		},
 	}
-	return todoList, nil
+	return taskList, nil
 }
 
-func (s *Static) Insert(todo *schema.Todo) (int, error) {
+func (s *Static) Insert(task *schema.Task) (int, error) {
 	return 0, nil
 }
 
-func (s *Static) Update(todo *schema.Todo) error {
+func (s *Static) Update(task *schema.Task) error {
 	return nil
 }
 

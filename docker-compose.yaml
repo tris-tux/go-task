@@ -6,8 +6,8 @@ services:
             - 5432:5432
         environment:
             - POSTGRES_USER=postgres
-            - POSTGRES_PASSWORD=rahasia
-            - POSTGRES_DB=belajar
+            - POSTGRES_PASSWORD=secret
+            - POSTGRES_DB=task
         volumes:
             - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
     todo-backend:
@@ -16,10 +16,10 @@ services:
             - 8080:8080
         environment:
             - DB_USER=postgres
-            - DB_PASSWORD=rahasia
+            - DB_PASSWORD=secret
             - DB_HOST=todo-postgres
             - DB_PORT=5432
-            - DB_DATABASE=belajar
+            - DB_DATABASE=task
         depends_on:
             - todo-postgres
     # todo-frontend:
