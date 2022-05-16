@@ -1,4 +1,4 @@
-module github.com/tris-tux/go-lis/backend
+module github.com/tris-tux/go-task/backend
 
 go 1.15
 

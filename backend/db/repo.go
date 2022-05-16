@@ -3,15 +3,15 @@ package db
 import (
 	"context"
 
-	"github.com/tris-tux/go-lis/backend/schema"
+	"github.com/tris-tux/go-task/backend/schema"
 )
 
 const repoKey = "repoKey"
 
 type Repo interface {
-	GetAll() ([]schema.Task, error)
-	Insert(task *schema.Task) (int, error)
-	Update(task *schema.Task) error
+	GetAll() ([]schema.Todo, error)
+	Insert(todo *schema.Todo) (int, error)
+	Update(todo *schema.Todo) error
 	Delete(id int) error
 	Close()
 }
@@ -24,16 +24,16 @@ func getRepo(ctx context.Context) Repo {
 	return ctx.Value(repoKey).(Repo)
 }
 
-func GetAll(ctx context.Context) ([]schema.Task, error) {
+func GetAll(ctx context.Context) ([]schema.Todo, error) {
 	return getRepo(ctx).GetAll()
 }
 
-func Insert(ctx context.Context, task *schema.Task) (int, error) {
-	return getRepo(ctx).Insert(task)
+func Insert(ctx context.Context, todo *schema.Todo) (int, error) {
+	return getRepo(ctx).Insert(todo)
 }
 
-func Update(ctx context.Context, task *schema.Task) error {
-	return getRepo(ctx).Update(task)
+func Update(ctx context.Context, todo *schema.Todo) error {
+	return getRepo(ctx).Update(todo)
 }
 
 func Delete(ctx context.Context, id int) error {

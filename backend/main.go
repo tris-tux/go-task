@@ -5,8 +5,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/tris-tux/go-lis/backend/db"
-	"github.com/tris-tux/go-lis/backend/handler"
+	"github.com/tris-tux/go-task/backend/db"
+	"github.com/tris-tux/go-task/backend/handler"
 	_ "github.com/lib/pq"
 )
 

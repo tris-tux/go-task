@@ -3,17 +3,17 @@ package handler
 import (
 	"net/http"
 
-	"github.com/tris-tux/go-lis/backend/db"
+	"github.com/tris-tux/go-task/backend/db"
 )
 
 func InitRoutes(postgres *db.Postgres) *http.ServeMux {
-	taskHandler := &taskHandler{
+	todoHandler := &todoHandler{
 		postgres: postgres,
 		static:   &db.Static{},
 	}
 	mux := http.NewServeMux()
-	mux.HandleFunc("/static", taskHandler.GetStatic)
-	mux.HandleFunc("/task", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/static", todoHandler.GetStatic)
+	mux.HandleFunc("/todo", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
 		w.Header().Set("Access-Control-Allow-Headers", "Origin, Content-Type, Authorization, cache-control")
@@ -22,13 +22,13 @@ func InitRoutes(postgres *db.Postgres) *http.ServeMux {
 		case http.MethodOptions:
 			w.Write([]byte("allowed"))
 		case http.MethodGet:
-			taskHandler.getAllTask(w, r)
+			todoHandler.getAllTodo(w, r)
 		case http.MethodPost:
-			taskHandler.insertTask(w, r)
+			todoHandler.insertTodo(w, r)
 		case http.MethodPut:
-			taskHandler.updateTask(w, r)
+			todoHandler.updateTodo(w, r)
 		case http.MethodDelete:
-			taskHandler.deleteTask(w, r)
+			todoHandler.deleteTodo(w, r)
 		default:
 			responseError(w, http.StatusNotFound, "")
 		}

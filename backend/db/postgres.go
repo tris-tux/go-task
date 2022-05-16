@@ -5,18 +5,18 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/tris-tux/go-lis/backend/schema"
+	"github.com/tris-tux/go-task/backend/schema"
 )
 
 type Postgres struct {
 	DB *sql.DB
 }
 
-func (p *Postgres) GetAll() ([]schema.Task, error) {
+func (p *Postgres) GetAll() ([]schema.Todo, error) {
 	query := `
 		SELECT *
-		FROM task
-		ORDER BY task_id;
+		FROM todo
+		ORDER BY id;
 	`
 
 	rows, err := p.DB.Query(query)
@@ -24,25 +24,25 @@ func (p *Postgres) GetAll() ([]schema.Task, error) {
 		return nil, err
 	}
 
-	taskList := []schema.Task{}
+	todoList := []schema.Todo{}
 	for rows.Next() {
-		var t schema.Task
-		if err := rows.Scan(&t.TaskId, &t.Title, &t.AcctionTime, &t.CreateTime, &t.UpdateTime, &t.IdFinished); err != nil {
+		var t schema.Todo
+		if err := rows.Scan(&t.ID, &t.Note, &t.Done); err != nil {
 			return nil, err
 		}
-		taskList = append(taskList, t)
+		todoList = append(todoList, t)
 	}
-	return taskList, nil
+	return todoList, nil
 }
 
-func (p *Postgres) Insert(task *schema.Task) (int, error) {
+func (p *Postgres) Insert(todo *schema.Todo) (int, error) {
 	query := `
-		INSERT INTO task (task_id, title, acction_time, create_time, update_time, id_finished)
-		VALUES(nextval('task_id'), $1, $2, $3)
+		INSERT INTO todo (id, note, done)
+		VALUES(nextval('todo_id'), $1, $2)
 		RETURNING id;
 	`
 
-	rows, err := p.DB.Query(query, task.Title, task.AcctionTime, task.CreateTime, task.UpdateTime, convertBoolToBit(task.IdFinished))
+	rows, err := p.DB.Query(query, todo.Note, convertBoolToBit(todo.Done))
 	if err != nil {
 		return -1, err
 	}
@@ -56,34 +56,34 @@ func (p *Postgres) Insert(task *schema.Task) (int, error) {
 	return id, nil
 }
 
-// func (p *Postgres) Update(todo *schema.Todo) error {
-// 	query := `
-// 		UPDATE todo
-// 		SET note = $2, done = $3
-// 		WHERE id = $1;
-// 	`
-
-// 	rows, err := p.DB.Query(query, todo.ID, todo.Note, convertBoolToBit(todo.Done))
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	var id int
-// 	for rows.Next() {
-// 		if err := rows.Scan(&id); err != nil {
-// 			return err
-// 		}
-// 	}
-// 	return nil
-// }
-
-func (p *Postgres) Delete(task_id int) error {
+func (p *Postgres) Update(todo *schema.Todo) error {
 	query := `
-		DELETE FROM task
-		WHERE task_id = $1;
+		UPDATE todo
+		SET note = $2, done = $3
+		WHERE id = $1;
 	`
 
-	if _, err := p.DB.Exec(query, task_id); err != nil {
+	rows, err := p.DB.Query(query, todo.ID, todo.Note, convertBoolToBit(todo.Done))
+	if err != nil {
+		return err
+	}
+
+	var id int
+	for rows.Next() {
+		if err := rows.Scan(&id); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (p *Postgres) Delete(id int) error {
+	query := `
+		DELETE FROM todo
+		WHERE id = $1;
+	`
+
+	if _, err := p.DB.Exec(query, id); err != nil {
 		return err
 	}
 
